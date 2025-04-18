@@ -7,14 +7,15 @@
 
 #include <GL/glew.h>
 #include <cstdio>
-#include <cstdlib>
+#include <cstring>
+#include <fstream>
 
 class glShader {
 
 public:
     GLuint id;
 
-    void loadShader(const char *file, char *&output);
+    char* loadShader(const char *file);
 
     glShader(const char *vertexGLSL, const char *fragmentGLSL);
 

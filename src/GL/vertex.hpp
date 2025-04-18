@@ -9,8 +9,8 @@
 
 struct vertex {
     glm::vec3 position;
-    glm::vec3 normal;
     glm::vec2 texUV;
+    glm::vec3 normal;
 };
 
 #endif //SDL2_ENGINE_VERTEX_HPP

@@ -16,9 +16,9 @@ glMesh::glMesh(std::vector<vertex> &vertices, std::vector<GLuint> &indices, char
     EBO *pEBO = new EBO(this->indices);
 
     this->pVAO->linkAttrib(pVBO, 0, 3, GL_FLOAT, sizeof(vertex), nullptr); // Position
-    this->pVAO->linkAttrib(pVBO, 1, 3, GL_FLOAT, sizeof(vertex), (void *) (3 * sizeof(float))); // Normals
-    this->pVAO->linkAttrib(pVBO, 2, 3, GL_FLOAT, sizeof(vertex), (void *) (6 * sizeof(float))); // Base Colour
-    this->pVAO->linkAttrib(pVBO, 3, 2, GL_FLOAT, sizeof(vertex), (void *) (9 * sizeof(float))); // UV
+    this->pVAO->linkAttrib(pVBO, 1, 2, GL_FLOAT, sizeof(vertex), (void *) offsetof(vertex, texUV)); // UV
+    this->pVAO->linkAttrib(pVBO, 2, 3, GL_FLOAT, sizeof(vertex), (void *) offsetof(vertex, normal)); // Normals
+
 
     this->pVAO->unbind();
     pVBO->unbind();

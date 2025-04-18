@@ -38,16 +38,19 @@ glMesh *importObj(const char *file) {
                 fscanf(source, "%f %f %f\n", &readVertex.position.x, &readVertex.position.y, &readVertex.position.z);
             }
             vertices.push_back(readVertex);
-        }
-        if (read == 'f') {
+
+        }else if (read == 'f') {
             fgetc(source); //skips a white-line
             GLuint vertexIndex[3], uvIndex[3], normalIndex[3];
 
-            fscanf(source, " %d/%*d/%*d %d/%*d/%*d %d/%*d/%*d\n", &vertexIndex[0], &vertexIndex[1], &vertexIndex[2]);
+            fscanf(source, " %d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2]);
             /* Explanation for the %*d:
              * Wavefront OBJ for indices has defined vertexIndices/faceIndices/normalIndices,
              * we really don't need these because we are indexing based on our struct vertex
              */
+            indices.push_back(vertexIndex[0]-1);
+            indices.push_back(vertexIndex[1]-1);
+            indices.push_back(vertexIndex[2]-1);
         }
     }
 

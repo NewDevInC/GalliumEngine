@@ -38,16 +38,13 @@ rheniumRenderer::rheniumRenderer(GLuint winX, GLuint winY) {
     glViewport(0, 0, winX, winY);
 }
 
-void rheniumRenderer::render(glShader *shader, glCamera *camera, VAO *pVAO, size_t indices) {
+void rheniumRenderer::render(glShader *shader, glCamera *camera, glMesh* mesh) {
     glClearColor(0.1f, 0.1f, 0.1F, 0xFF); // Background in case we have no skybox
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    shader->start();
+    camera->updateMatrix();
 
-    camera->exportMatrix(45.0f, 0.1f, 100.0f, shader, "cameraMatrix");
-
-    pVAO->bind();
-    glDrawElements(GL_TRIANGLES, indices, GL_UNSIGNED_INT, nullptr);
+    mesh->drawMesh(shader, camera);
 
     SDL_GL_SwapWindow(this->window);
 }

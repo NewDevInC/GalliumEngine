@@ -18,34 +18,20 @@ int main(int argc, char* argv[]) {
         return -1;
     }
 
-    auto* shader = new glShader("./objects/shaders/default.vert", "./objects/shaders/default.frag");
-    auto* pVAO = new VAO();
-    pVAO->bind();
+    auto* shader = new glShader("./objects/shaders/default.vert", "./objects/shaders/defaultMesh.frag");
+    auto* cube = importObj("./objects/cube.obj");
 
-    auto* pVBO = new VBO();
-    auto* pEBO = new EBO();
-
-    pVAO->linkAttrib(*pVBO, 0, 3, GL_FLOAT, 8 * sizeof(float), nullptr);
-    pVAO->linkAttrib(*pVBO, 1, 3, GL_FLOAT, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-    pVAO->linkAttrib(*pVBO, 2, 2, GL_FLOAT, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-    // Unbind all to prevent accidentally modifying them
-    pVAO->unbind();
-    pVBO->unbind();
-    pEBO->unbind();
 
     glEnable(GL_DEPTH_TEST);
 
-    auto* camera = new glCamera((float)800/800, glm::vec3(0.0f, 0.0f, 2.0f));
+    auto* camera = new glCamera((float)800/800, glm::vec3(0.0f, 0.0f, 10.0f), 100.0f, 0.1f, 45);
 
     while (event.type != SDL_QUIT) {
 
-        renderer->render(shader, camera, pVAO, sizeof(indices));
+        renderer->render(shader, camera, cube);
         SDL_PollEvent(&event);
 
     }
-    delete pVAO;
-    delete pVBO;
-    delete pEBO;
     delete shader;
 
     delete renderer;

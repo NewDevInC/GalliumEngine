@@ -10,6 +10,7 @@
 #include <GL/EBO.hpp>
 #include <GL/glShader.hpp>
 #include <GL/camera.hpp>
+#include <import/OBJ.hpp>
 #include <SDL.h>
 
 
@@ -19,7 +20,7 @@ public:
 
     ~rheniumRenderer();
 
-    void render(glShader *shader, glCamera *camera, VAO *pVAO, size_t indices);
+    void render(glShader *shader, glCamera *camera, glMesh* mesh);
 
     static int error;
 

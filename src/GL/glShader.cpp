@@ -3,46 +3,42 @@
 //
 
 
+
 #include "glShader.hpp"
 
 
-void glShader::loadShader(const char *file, char *&output) {
+char* glShader::loadShader(const char *file) {
+    FILE *fp;
+    long size = 0;
+    char* shaderContent;
 
-    FILE *source = fopen(file, "r");
-    fseek(source, 0, SEEK_END);
-    int size = ftell(source);
-    rewind(source);
-    output = (char *) malloc(size);
-    char c;
+    /* Read File to get size */
+    fp = fopen(file, "rb");
+    if(fp == nullptr) {
+        return nullptr;
+    }
+    fseek(fp, 0L, SEEK_END);
+    size = ftell(fp)+1;
+    fclose(fp);
 
-    while ((c = fgetc(source)) != EOF) {
-        *output = c;
-        output++;
+    /* Read File for Content */
+    fp = fopen(file, "r");
+    shaderContent = (char *)(memset(malloc(size), '\0', size));
+    fread(shaderContent, 1, size-1, fp);
+    fclose(fp);
+
+    return shaderContent;
+
     }
 
-    output++;
-    *output = '\0';
-    output--;
-
-    rewind(source);
-    while (fgetc(source) != EOF) {
-        output--;
-    }
-
-    fclose(source);
-
-}
 
 glShader::glShader(const char *vertexGLSL, const char *fragmentGLSL) {
 
     // 1. Read the GLSL files
-    // 2. gib GLSL to OpenGL
+    // 2. preform C++ voodoo magic because apparently this program hates reading things C style
 
-    char *vC = nullptr;
-    loadShader(vertexGLSL, vC);
-
-    char *fC = nullptr;
-    loadShader(fragmentGLSL, fC);
+    char* vC = loadShader(vertexGLSL);
+    char* fC = loadShader(fragmentGLSL);
 
 
     GLuint v_s = glCreateShader(GL_VERTEX_SHADER);
@@ -61,7 +57,7 @@ glShader::glShader(const char *vertexGLSL, const char *fragmentGLSL) {
     glGetShaderiv(v_s, GL_COMPILE_STATUS, &hasComplied);
     if (hasComplied == GL_FALSE) {
         glGetShaderInfoLog(v_s, 1024, nullptr, infoLog);
-        std::cout << "SHADER_COMPILATION_ERROR for:" << "VERTEX" << "\n" << infoLog << std::endl;
+        printf("SHADER_COMPILATION_ERROR for: VERTEX \n %s", infoLog);
     }
 
 
@@ -77,7 +73,7 @@ glShader::glShader(const char *vertexGLSL, const char *fragmentGLSL) {
     glGetShaderiv(f_s, GL_COMPILE_STATUS, &hasComplied);
     if (hasComplied == GL_FALSE) {
         glGetShaderInfoLog(f_s, 1024, nullptr, infoLog);
-        std::cout << "SHADER_COMPILATION_ERROR for:" << "FRAGMENT" << "\n" << infoLog << std::endl;
+        printf("SHADER_COMPILATION_ERROR for: FRAGMENT \n %s", infoLog);
     }
 
     this->id = glCreateProgram();

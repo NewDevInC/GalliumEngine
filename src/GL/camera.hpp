@@ -29,9 +29,14 @@ public:
 
     float aspectRatio = 1.0f;
 
-    glCamera(float aspectRatio, glm::vec3 position);
+    float farPlane = 100.0f;
+    float closePlane = 0.1f;
+    float fov = 90.0f;
 
-    void updateMatrix(float fov, float nearPlane, float farPlane);
+    glCamera(float aspectRatio, glm::vec3 position);
+    glCamera(float aspectRatio, glm::vec3 position, float farPlane, float closePlane, float fov);
+
+    void updateMatrix();
 
     void exportMatrix(glShader *shader, const char *uniform);
 

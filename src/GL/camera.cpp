@@ -9,13 +9,23 @@ glCamera::glCamera(float aspectRatio, glm::vec3 position) {
     this->position = position;
 }
 
-void glCamera::updateMatrix(float fov, float nearPlane, float farPlane) {
+glCamera::glCamera(float aspectRatio, glm::vec3 position, float farPlane, float closePlane, float fov){
+    this->aspectRatio = aspectRatio;
+    this->position = position;
+
+    this->farPlane = farPlane;
+    this->closePlane = closePlane;
+    this->fov = fov;
+}
+
+
+void glCamera::updateMatrix() {
     // Initializes matrices since otherwise they will be the null matrix
     auto view = glm::mat4(1.0f);
     auto projection = glm::mat4(1.0f);
 
     view = glm::lookAt(this->position, this->position + this->orientation, this->up);
-    projection = glm::perspective(glm::radians(fov), this->aspectRatio, nearPlane, farPlane);
+    projection = glm::perspective(glm::radians(this->fov), this->aspectRatio, this->closePlane, this->farPlane);
 
     this->matrix = projection * view;
 
