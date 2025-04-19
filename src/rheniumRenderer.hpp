@@ -20,7 +20,10 @@ public:
 
     ~rheniumRenderer();
 
-    void render(glShader *shader, glCamera *camera, glMesh* mesh);
+    void render(glCamera *camera);
+
+    void pushMeshToStack(glMesh* &mesh);
+    void popMeshToStack();
 
     static int error;
 
@@ -29,11 +32,13 @@ public:
 #ifdef BARE_METAL
     SDL_Window *window = nullptr;
     SDL_Renderer *renderer = nullptr;
+    std::vector<glMesh*> queuedMeshes = {};
 #else
 
 private:
     SDL_Window *window = nullptr;
     SDL_GLContext context = nullptr;
+    std::vector<glMesh*> queuedMeshes = {};
 
 
 #endif

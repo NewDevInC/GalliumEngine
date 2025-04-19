@@ -18,12 +18,18 @@ public:
     std::vector<GLuint> indices;
     // std::vector <Texture> textures;
 
-    glMesh(std::vector<vertex> &vertices, std::vector<GLuint> &indices, char *name);
+    glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
+    glm::mat4 worldMatrix = glm::mat4(1.0f);
 
-    void drawMesh(glShader *&shader, glCamera *&camera);
+    glShader* shader;
+
+    glMesh(glShader* &shader, std::vector<vertex> &vertices, std::vector<GLuint> &indices, const char *name);
+    glMesh(std::vector<vertex> &vertices, std::vector<GLuint> &indices, const char *name);
+
+    void drawMesh(glCamera *&camera);
 
 private:
-    char *name;
+    const char *name;
     VAO *pVAO = new VAO();
 
 };

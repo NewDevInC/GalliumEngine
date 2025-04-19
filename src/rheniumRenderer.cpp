@@ -36,17 +36,28 @@ rheniumRenderer::rheniumRenderer(GLuint winX, GLuint winY) {
         error = 3;
     }
     glViewport(0, 0, winX, winY);
+    glEnable(GL_DEPTH_TEST);
 }
 
-void rheniumRenderer::render(glShader *shader, glCamera *camera, glMesh* mesh) {
+void rheniumRenderer::render(glCamera *camera) {
     glClearColor(0.1f, 0.1f, 0.1F, 0xFF); // Background in case we have no skybox
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     camera->updateMatrix();
 
-    mesh->drawMesh(shader, camera);
+    for (auto &mesh : queuedMeshes) {
+        mesh->drawMesh(camera);
+    }
 
     SDL_GL_SwapWindow(this->window);
+}
+
+void rheniumRenderer::pushMeshToStack(glMesh *&mesh) {
+    queuedMeshes.push_back(mesh);
+}
+
+void rheniumRenderer::popMeshToStack() {
+    queuedMeshes.pop_back();
 }
 
 SDL_Window *rheniumRenderer::getWindow() {
