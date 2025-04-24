@@ -23,11 +23,18 @@ rheniumRenderer::rheniumRenderer(GLuint winX, GLuint winY) {
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
 
-    this->window = SDL_CreateWindow("OpenGL", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, winX, winY,
+    this->window = SDL_CreateWindow("OpenGL", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, winX, winY,
                                     SDL_WINDOW_OPENGL);
     this->context = SDL_GL_CreateContext(window);
 
-    if (window == nullptr) {
+    SDL_GL_MakeCurrent(this->window, this->context);
+
+    if (this->window == nullptr) {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create window and renderer: %s", SDL_GetError());
+        error = 2;
+    }
+
+    if (this->context == nullptr){
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create window and renderer: %s", SDL_GetError());
         error = 2;
     }
@@ -45,19 +52,27 @@ void rheniumRenderer::render(glCamera *camera) {
 
     camera->updateMatrix();
 
-    for (auto &mesh : queuedMeshes) {
-        mesh->drawMesh(camera);
+    for (auto &entity : rendererEntity) {
+        if(entity->getType() == entityType::Light)
+            for (auto& [id, shader]: shaders)
+                entity->draw((shader));
+        if(entity->getType() == entityType::Game) entity->draw(shaders[entity->shaderId], camera);
     }
 
     SDL_GL_SwapWindow(this->window);
 }
 
-void rheniumRenderer::pushMeshToStack(glMesh *&mesh) {
-    queuedMeshes.push_back(mesh);
+void rheniumRenderer::bindShaderToEntity(GLuint id, std::shared_ptr<glShader> &shader) {
+    shaders[id] = shader;
+
 }
 
-void rheniumRenderer::popMeshToStack() {
-    queuedMeshes.pop_back();
+void rheniumRenderer::addEntityToRenderStack(std::shared_ptr<genericEntity> entity) {
+    rendererEntity.push_back(entity);
+}
+
+void rheniumRenderer::popEntityFromRenderStack() {
+    rendererEntity.pop_back();
 }
 
 SDL_Window *rheniumRenderer::getWindow() {
@@ -68,3 +83,5 @@ rheniumRenderer::~rheniumRenderer() {
     SDL_GL_DeleteContext(this->context);
     SDL_DestroyWindow(this->window);
 }
+
+

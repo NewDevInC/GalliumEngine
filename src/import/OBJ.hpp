@@ -8,13 +8,20 @@
 
 #include <GL/glew.h>
 #include <GL/vertex.hpp>
-#include <GL/glMesh.hpp>
+#include <gameEntity.hpp>
+
 #include <vector>
 #include <cstdio>
 #include <cstdlib>
+#include <map>
+#include <memory>
+#include <string>
+
+#include <util.hpp>
 
 
-glMesh *importObj(const char *file);
+std::unique_ptr<gameEntity> importObj(const char *file);
+std::vector<glMaterial> readMaterials(const char* file);
 
 
 #endif //SDL2_ENGINE_OBJ_HPP

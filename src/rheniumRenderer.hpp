@@ -10,7 +10,14 @@
 #include <GL/EBO.hpp>
 #include <GL/glShader.hpp>
 #include <GL/camera.hpp>
+
 #include <import/OBJ.hpp>
+
+#include <genericEntity.hpp>
+#include <gameEntity.hpp>
+#include <lightEntity.hpp>
+
+#include <memory>
 #include <SDL.h>
 
 
@@ -22,8 +29,10 @@ public:
 
     void render(glCamera *camera);
 
-    void pushMeshToStack(glMesh* &mesh);
-    void popMeshToStack();
+    void bindShaderToEntity(GLuint id, std::shared_ptr<glShader> &shader);
+
+    void addEntityToRenderStack(std::shared_ptr<genericEntity> entity);
+    void popEntityFromRenderStack();
 
     static int error;
 
@@ -38,7 +47,8 @@ public:
 private:
     SDL_Window *window = nullptr;
     SDL_GLContext context = nullptr;
-    std::vector<glMesh*> queuedMeshes = {};
+    std::vector<std::shared_ptr<genericEntity>> rendererEntity = {};
+    std::map<GLuint, std::shared_ptr<glShader>> shaders = {};
 
 
 #endif

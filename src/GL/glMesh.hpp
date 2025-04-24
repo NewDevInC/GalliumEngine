@@ -6,32 +6,32 @@
 #define SDL2_ENGINE_GLMESH_HPP
 
 #include <vector>
+#include <utility>
+
 #include <GL/VAO.hpp>
 #include <GL/EBO.hpp>
 #include <GL/camera.hpp>
 #include <GL/vertex.hpp>
+#include <GL/glMaterial.hpp>
+#include <memory>
 
 
 class glMesh {
 public:
     std::vector<vertex> vertices;
     std::vector<GLuint> indices;
-    // std::vector <Texture> textures;
 
-    glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
-    glm::mat4 worldMatrix = glm::mat4(1.0f);
+    std::shared_ptr<glShader> shader;
 
-    glShader* shader;
+    glMesh(std::vector<vertex> vertices, std::vector<GLuint> indices);
 
-    glMesh(glShader* &shader, std::vector<vertex> &vertices, std::vector<GLuint> &indices, const char *name);
-    glMesh(std::vector<vertex> &vertices, std::vector<GLuint> &indices, const char *name);
+    void drawMesh(glCamera* &camera, const glm::mat4 &transformMatrix, glMaterial &material);
 
-    void drawMesh(glCamera *&camera);
 
 private:
-    const char *name;
     VAO *pVAO = new VAO();
-
+    VBO *VBOinstance = nullptr;
+    EBO *EBOinstance = nullptr;
 };
 
 
