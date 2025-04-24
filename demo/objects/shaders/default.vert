@@ -30,7 +30,7 @@ void main()
     // Postion of our model in relative to world origin
     currentPosition = vec3(worldMatrix * vec4(atribPos, 1.0f));
     // Outputs the positions/coordinates of all vertices
-    gl_Position = camMatrix * vec4(atribPos, 1.0);
+    gl_Position = camMatrix * worldMatrix * vec4(atribPos, 1.0f);
     // Assigns the texture coordinates from our Vertex data
     texCoord = atribTex;
     // Assigns the normal from our Vertex data
